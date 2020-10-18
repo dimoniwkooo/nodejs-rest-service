@@ -1,38 +1,54 @@
 const router = require('express').Router();
-const { serve } = require('swagger-ui-express');
 const User = require('./user.model');
 const usersService = require('./user.service');
+const { customError, catchError } = require('../../common/error');
 
 router
   .route('/')
-  .get(async (req, res) => {
-    const users = await usersService.getAll();
-    res.json(users.map(User.toResponse));
-  })
-  .post(async (req, res) => {
-    const user = await usersService.add(
-      new User({
-        login: req.body.login,
-        password: req.body.password,
-        name: req.body.name
-      })
-    );
-    res.json(User.toResponse(user));
-  });
+  .get(
+    catchError(async (req, res) => {
+      const users = await usersService.getAll();
+      res.json(users.map(User.toResponse));
+    }))
+
+  .post(
+    catchError(async (req, res) => {
+      const user = await usersService.add(
+        new User({
+          login: req.body.login,
+          password: req.body.password,
+          name: req.body.name
+        })
+      );
+      if (user) {
+        res.json(User.toResponse(user));
+      } else { throw new customError(400, 'Bad request'); }
+    }));
 
 router
   .route('/:id')
-  .get(async (req, res) => {
-    const user = await usersService.get(req.params.id);
-    res.json(User.toResponse(user));
-  })
-  .put(async (req, res) => {
-    const user = await usersService.upd(req.params.id, req.body);
-    res.json(User.toResponse(user));
-  })
-  .delete(async (req, res) => {
-    const user = await usersService.del(req.params.id);
-    res.json(User.toResponse(user));
-  });
+  .get(
+    catchError(async (req, res) => {
+      const user = await usersService.get(req.params.id);
+      if (user) { res.json(User.toResponse(user)); }
+      else { throw new customError(404, 'User not found'); }
+    }))
+
+  .put(
+    catchError(async (req, res) => {
+      const user = await usersService.upd(req.params.id, req.body);
+      if (user) { res.json(User.toResponse(user)); }
+      else { throw new customError(400, 'Bad request'); }
+    }))
+
+  .delete(
+    catchError(async (req, res) => {
+      if (await usersService.del(req.params.id)) {
+        res.status(204).end();
+      } else {
+        throw new customError(404, 'User not found');
+      }
+    })
+  );
 
 module.exports = router;
