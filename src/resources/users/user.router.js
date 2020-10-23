@@ -9,31 +9,46 @@ router
     catchError(async (req, res) => {
       const users = await usersService.getAll();
       res.json(users.map(User.toResponse));
-    }))
+    })
+  )
 
   .post(
     catchError(async (req, res) => {
       const newUser = await usersService.add(req.body);
       if (newUser) {
         res.json(User.toResponse(newUser));
-      } else { throw new customError(400, 'Bad request'); }
-    }));
+      } else {
+        throw new customError(400, 'Bad request');
+      }
+    })
+  );
 
 router
   .route('/:id')
   .get(
     catchError(async (req, res) => {
       const user = await usersService.get(req.params.id);
-      if (user) { res.json(User.toResponse(user)); }
-      else { throw new customError(404, 'User not found'); }
-    }))
+      if (user) {
+        res.json(User.toResponse(user));
+      } else {
+        throw new customError(404, 'User not found');
+      }
+    })
+  )
 
   .put(
     catchError(async (req, res) => {
-      const user = await usersService.upd({ ...req.body, id: `${req.params.id}` });
-      if (user) { res.json(User.toResponse(user)); }
-      else { throw new customError(400, 'Bad request'); }
-    }))
+      const user = await usersService.upd({
+        ...req.body,
+        id: `${req.params.id}`
+      });
+      if (user) {
+        res.json(User.toResponse(user));
+      } else {
+        throw new customError(400, 'Bad request');
+      }
+    })
+  )
 
   .delete(
     catchError(async (req, res) => {

@@ -12,7 +12,6 @@ const add = task => {
   return tasksRepo.add(task);
 };
 
-
 const upd = async (boardId, taskId, task) => {
   return await tasksRepo.upd(boardId, taskId, task);
 };

@@ -26,7 +26,7 @@ process
       stack: reason.stack
     });
   });
-  
+
 connectToDB(() => {
   app.listen(PORT, () =>
     console.log(`App is running on http://localhost:${PORT}`)

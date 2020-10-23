@@ -19,7 +19,8 @@ router
     catchError(async (req, res) => {
       const boards = await boardsService.getAll();
       res.json(boards.map(el => Board.toResponse(el)));
-    }))
+    })
+  )
 
   .post(
     catchError(async (req, res) => {
@@ -29,7 +30,8 @@ router
       } else {
         throw new customError(400, 'Bad request');
       }
-    }));
+    })
+  );
 
 router
   .route('/:id')
@@ -41,7 +43,8 @@ router
       } else {
         throw new customError(404, 'Board not found');
       }
-    }))
+    })
+  )
 
   .put(
     catchError(async (req, res) => {
@@ -51,7 +54,8 @@ router
       } else {
         throw new customError(400, 'Bad request');
       }
-    }))
+    })
+  )
 
   .delete(
     catchError(async (req, res) => {
@@ -60,6 +64,7 @@ router
       } else {
         throw new customError(404, 'Board not found');
       }
-    }));
+    })
+  );
 
 module.exports = router;

@@ -9,17 +9,22 @@ router
     catchError(async (req, res) => {
       const tasks = await tasksService.getAll(req.boardId);
       res.json(tasks.map(el => Task.toResponse(el)));
-    }))
+    })
+  )
 
   .post(
     catchError(async (req, res) => {
-      const newTask = await tasksService.add({ ...req.body, boardId: req.boardId });
+      const newTask = await tasksService.add({
+        ...req.body,
+        boardId: req.boardId
+      });
       if (newTask) {
         res.json(Task.toResponse(newTask));
       } else {
         throw new customError(400, 'Bad request');
       }
-    }));
+    })
+  );
 
 router
   .route('/:id')
@@ -31,15 +36,12 @@ router
       } else {
         throw new customError(404, 'Task not found');
       }
-    }))
+    })
+  )
 
   .put(
     catchError(async (req, res) => {
-      const task = await tasksService.upd(
-        req.boardId,
-        req.params.id,
-        req.body
-      );
+      const task = await tasksService.upd(req.boardId, req.params.id, req.body);
       res.json(task);
     })
   )
@@ -51,6 +53,7 @@ router
       } else {
         throw new customError(404, 'Task not found');
       }
-    }));
+    })
+  );
 
 module.exports = router;
