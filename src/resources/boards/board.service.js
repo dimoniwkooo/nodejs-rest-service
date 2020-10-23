@@ -1,4 +1,5 @@
-const boardsRepo = require('./board.memory.repository');
+const boardsRepo = require('./board.db.repository');
+const tasksRepo = require('../tasks/task.db.repository');
 
 const getAll = () => boardsRepo.getAll();
 
@@ -12,8 +13,14 @@ const add = board => {
   return boardsRepo.add(board);
 };
 
-const upd = (id, board) => boardsRepo.upd(id, board);
+const upd = (id, board) => {
+  return boardsRepo.upd(id, board);
+};
 
-const del = id => boardsRepo.del(id);
+const del = async id => {
+  const result = await boardsRepo.del(id);
+  if (result) tasksRepo.deleteTasks(id);
+  return result;
+};
 
 module.exports = { getAll, get, add, upd, del };

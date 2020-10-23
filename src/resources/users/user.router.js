@@ -13,15 +13,9 @@ router
 
   .post(
     catchError(async (req, res) => {
-      const user = await usersService.add(
-        new User({
-          login: req.body.login,
-          password: req.body.password,
-          name: req.body.name
-        })
-      );
-      if (user) {
-        res.json(User.toResponse(user));
+      const newUser = await usersService.add(req.body);
+      if (newUser) {
+        res.json(User.toResponse(newUser));
       } else { throw new customError(400, 'Bad request'); }
     }));
 
@@ -36,7 +30,7 @@ router
 
   .put(
     catchError(async (req, res) => {
-      const user = await usersService.upd(req.params.id, req.body);
+      const user = await usersService.upd({ ...req.body, id: `${req.params.id}` });
       if (user) { res.json(User.toResponse(user)); }
       else { throw new customError(400, 'Bad request'); }
     }))
