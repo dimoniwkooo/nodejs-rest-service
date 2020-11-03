@@ -19,7 +19,7 @@ const upd = (id, board) => {
 
 const del = async id => {
   const result = await boardsRepo.del(id);
-  if (result) tasksRepo.deleteTasks(id);
+  if (result) await tasksRepo.deleteTasks(id);
   return result;
 };
 

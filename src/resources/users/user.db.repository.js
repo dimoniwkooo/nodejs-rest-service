@@ -1,6 +1,8 @@
 const User = require('./user.model');
 
 // methods
+const getUserByLogin = async login => User.findOne({ login });
+
 const getAll = async () => User.find({});
 
 const get = async id => User.findOne({ _id: id });
@@ -13,4 +15,4 @@ const upd = async user => {
 
 const del = async id => (await User.deleteOne({ _id: id })).ok;
 
-module.exports = { getAll, get, add, upd, del };
+module.exports = {  getUserByLogin, getAll, get, add, upd, del };
